@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>家庭资产负债表</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+</head>
+<body class="bg-gray-50">
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const PASSWORD = "wealthhk888";
+const QR_URL = "https://raw.githubusercontent.com/zhengmm458-ui/QR-code/main/IMG_6821.jpg";
+
+const CURRENCIES = {
+  HKD: { label: "港元 HKD", symbol: "HK$" },
+  CNY: { label: "人民币 CNY", symbol: "¥" },
+};
+
+const formatNum = (n) => {
+  if (!n && n !== 0) return "";
+  return Number(n).toLocaleString("zh-HK");
+};
+
+const parseNum = (s) => {
+  const n = parseFloat(String(s).replace(/,/g, ""));
+  return isNaN(n) ? 0 : n;
+};
+
+const Section = ({ title, color, children }) => (
+  <div style={{marginBottom:"24px"}}>
+    <div style={{padding:"8px 12px", borderRadius:"8px 8px 0 0", color:"white", fontWeight:"bold", fontSize:"14px"}} className={color}>{title}</div>
+    <div style={{border:"1px solid #e5e7eb", borderTop:"none", borderRadius:"0 0 8px 8px", overflow:"hidden"}}>{children}</div>
+  </div>
+);
+
+const Row = ({ label, sublabel, value, onChange, sym }) => (
+  <div style={{display:"flex", alignItems:"center", borderBottom:"1px solid #f3f4f6", background:"white"}}>
+    <div style={{flex:1, padding:"8px 12px"}}>
+      <div style={{fontSize:"14px", color:"#1f2937"}}>{label}</div>
+      {sublabel && <div style={{fontSize:"12px", color:"#9ca3af", marginTop:"2px"}}>{sublabel}</div>}
+    </div>
+    <div style={{width:"160px", padding:"8px 12px"}}>
+      <div style={{position:"relative"}}>
+        <span style={{position:"absolute", left:"8px", top:"50%", transform:"translateY(-50%)", color:"#9ca3af", fontSize:"12px"}}>{sym}</span>
+        <input
+          type="text"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          placeholder="0"
+          style={{width:"100%", paddingLeft:"32px", paddingRight:"8px", paddingTop:"4px", paddingBottom:"4px", fontSize:"14px", textAlign:"right", border:"1px solid #e5e7eb", borderRadius:"6px", outline:"none", boxSizing:"border-box"}}
+        />
+      </div>
+    </div>
+  </div>
+);
+
+const SubTotal = ({ label, value, color, sym }) => (
+  <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 12px", background:"#f9fafb", borderTop:"1px solid #e5e7eb"}}>
+    <span style={{fontSize:"14px", fontWeight:"600", color:"#4b5563"}}>{label}</span>
+    <span style={{fontSize:"14px", fontWeight:"700", color:color}}>{sym} {formatNum(value) || "0"}</span>
+  </div>
+);
+
+const initialData = {
+  cash_hk:"", cash_cn:"", cash_us:"", cash_other:"",
+  deposit_fixed:"", deposit_notice:"",
+  stock_hk:"", stock_us:"", stock_cn:"", stock_other:"",
+  fund_index:"", fund_active:"", fund_money:"",
+  bond:"", crypto:"", insurance_cv:"",
+  property_self:"", property_invest:"", property_overseas:"",
+  vehicle:"", gold:"", art:"",
+  mpf:"", pension:"", annuity:"",
+  biz_equity:"", loan_out:"", other_asset:"",
+  credit_card:"", overdraft:"", short_loan:"",
+  mortgage_self:"", mortgage_invest:"",
+  car_loan:"", study_loan:"", personal_loan:"", biz_loan:"", tax_due:"", other_liability:"",
+};
+
+function LockScreen({ onUnlock }) {
+  const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
+
+  const handleSubmit = () => {
+    if (input === PASSWORD) {
+      onUnlock();
+    } else {
+      setError(true);
+      setInput("");
+      setTimeout(() => setError(false), 2000);
+    }
+  };
+
+  return (
+    <div style={{minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", background:"#f9fafb", padding:"16px"}}>
+      <div style={{background:"white", borderRadius:"16px", boxShadow:"0 10px 25px rgba(0,0,0,0.1)", padding:"32px", width:"100%", maxWidth:"360px", textAlign:"center"}}>
+        <div style={{fontSize:"40px", marginBottom:"16px"}}>🔒</div>
+        <h2 style={{fontSize:"18px", fontWeight:"bold", color:"#1f2937", marginBottom:"4px"}}>家庭资产负债表</h2>
+        <p style={{fontSize:"14px", color:"#9ca3af", marginBottom:"24px"}}>请输入密码以访问</p>
+        <input
+          type="password"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && handleSubmit()}
+          placeholder="输入密码"
+          style={{
+            width:"100%", border: error ? "1px solid #f87171" : "1px solid #e5e7eb",
+            borderRadius:"8px", padding:"10px 16px", textAlign:"center", fontSize:"14px",
+            marginBottom:"12px", outline:"none", boxSizing:"border-box",
+            background: error ? "#fef2f2" : "white"
+          }}
+        />
+        {error && <p style={{fontSize:"12px", color:"#ef4444", marginBottom:"12px"}}>密码错误，请重试</p>}
+        <button
+          onClick={handleSubmit}
+          style={{width:"100%", background:"#111827", color:"white", borderRadius:"8px", padding:"10px", fontSize:"14px", fontWeight:"500", border:"none", cursor:"pointer", marginBottom:"16px"}}
+        >
+          进入
+        </button>
+        <p style={{fontSize:"12px", color:"#9ca3af", marginBottom:"12px"}}>扫码加微信获取密码</p>
+        <img
+          src={QR_URL}
+          alt="微信二维码"
+          style={{width:"144px", height:"144px", margin:"0 auto", borderRadius:"12px", objectFit:"cover", display:"block"}}
+        />
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [unlocked, setUnlocked] = useState(false);
+  const [d, setD] = useState(initialData);
+  const [currency, setCurrency] = useState("HKD");
+
+  if (!unlocked) return <LockScreen onUnlock={() => setUnlocked(true)} />;
+
+  const sym = CURRENCIES[currency].symbol;
+  const set = (k) => (v) => setD(prev => ({ ...prev, [k]: v }));
+  const g = (k) => d[k];
+  const sum = (...keys) => keys.reduce((acc, k) => acc + parseNum(g(k)), 0);
+
+  const liquid     = sum("cash_hk","cash_cn","cash_us","cash_other","deposit_fixed","deposit_notice");
+  const invest     = sum("stock_hk","stock_us","stock_cn","stock_other","fund_index","fund_active","fund_money","bond","crypto","insurance_cv");
+  const physical   = sum("property_self","property_invest","property_overseas","vehicle","gold","art");
+  const retirement = sum("mpf","pension","annuity");
+  const other_a    = sum("biz_equity","loan_out","other_asset");
+  const total_asset = liquid + invest + physical + retirement + other_a;
+
+  const short_liab = sum("credit_card","overdraft","short_loan");
+  const mortgage   = sum("mortgage_self","mortgage_invest");
+  const other_liab = sum("car_loan","study_loan","personal_loan","biz_loan","tax_due","other_liability");
+  const total_liab = short_liab + mortgage + other_liab;
+
+  const net_worth   = total_asset - total_liab;
+  const debt_ratio  = total_asset > 0 ? ((total_liab / total_asset) * 100).toFixed(1) : "0.0";
+  const liquid_ratio = total_liab > 0 ? (liquid / total_liab).toFixed(2) : "—";
+
+  const R = (props) => <Row {...props} sym={sym} />;
+  const ST = (props) => <SubTotal {...props} sym={sym} />;
+
+  return (
+    <div style={{maxWidth:"640px", margin:"0 auto", padding:"16px", fontFamily:"sans-serif"}}>
+      <div style={{textAlign:"center", marginBottom:"24px"}}>
+        <h1 style={{fontSize:"20px", fontWeight:"bold", color:"#1f2937"}}>家庭资产负债表</h1>
+        <p style={{fontSize:"12px", color:"#9ca3af", marginTop:"4px"}}>Family Balance Sheet</p>
+        <div style={{display:"flex", justifyContent:"center", gap:"8px", marginTop:"12px"}}>
+          {Object.entries(CURRENCIES).map(([key, val]) => (
+            <button key={key} onClick={() => setCurrency(key)}
+              style={{
+                padding:"6px 16px", borderRadius:"999px", fontSize:"14px", fontWeight:"500", cursor:"pointer",
+                border: currency === key ? "1px solid #111827" : "1px solid #d1d5db",
+                background: currency === key ? "#111827" : "white",
+                color: currency === key ? "white" : "#6b7280"
+              }}
+            >{val.label}</button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{fontSize:"16px", fontWeight:"bold", color:"#1d4ed8", marginBottom:"12px"}}>资产 Assets</div>
+
+      <Section title="💵 流动资产 Liquid Assets" color="bg-blue-500">
+        <R label="香港银行存款" sublabel="支票户口 / 储蓄户口" value={g("cash_hk")} onChange={set("cash_hk")} />
+        <R label="内地银行存款" sublabel="人民币折算" value={g("cash_cn")} onChange={set("cash_cn")} />
+        <R label="海外银行存款" sublabel="美国 / 新加坡 / 其他" value={g("cash_us")} onChange={set("cash_us")} />
+        <R label="其他现金" sublabel="实物现金 / 数字钱包余额" value={g("cash_other")} onChange={set("cash_other")} />
+        <R label="定期存款" value={g("deposit_fixed")} onChange={set("deposit_fixed")} />
+        <R label="通知存款 / 活期理财" value={g("deposit_notice")} onChange={set("deposit_notice")} />
+        <ST label="流动资产小计" value={liquid} color="#1d4ed8" />
+      </Section>
+
+      <Section title="📈 投资资产 Investment Assets" color="bg-indigo-500">
+        <R label="港股" sublabel="市值（含未结算）" value={g("stock_hk")} onChange={set("stock_hk")} />
+        <R label="美股 / 美国ETF" value={g("stock_us")} onChange={set("stock_us")} />
+        <R label="A股 / 沪深港通" value={g("stock_cn")} onChange={set("stock_cn")} />
+        <R label="其他股票" value={g("stock_other")} onChange={set("stock_other")} />
+        <R label="指数基金" sublabel="被动型 ETF" value={g("fund_index")} onChange={set("fund_index")} />
+        <R label="主动型基金" value={g("fund_active")} onChange={set("fund_active")} />
+        <R label="货币基金 / 短债基金" value={g("fund_money")} onChange={set("fund_money")} />
+        <R label="债券" sublabel="政府债 / 企业债" value={g("bond")} onChange={set("bond")} />
+        <R label="加密货币" sublabel="BTC / ETH 等折算市值" value={g("crypto")} onChange={set("crypto")} />
+        <R label="保险现金值" sublabel="储蓄险退保价值" value={g("insurance_cv")} onChange={set("insurance_cv")} />
+        <ST label="投资资产小计" value={invest} color="#4338ca" />
+      </Section>
+
+      <Section title="🏠 实物资产 Physical Assets" color="bg-teal-500">
+        <R label="自住物业" sublabel="当前市值估算" value={g("property_self")} onChange={set("property_self")} />
+        <R label="投资物业" sublabel="收租物业市值" value={g("property_invest")} onChange={set("property_invest")} />
+        <R label="海外物业" value={g("property_overseas")} onChange={set("property_overseas")} />
+        <R label="车辆" sublabel="当前二手市值" value={g("vehicle")} onChange={set("vehicle")} />
+        <R label="黄金 / 贵金属" value={g("gold")} onChange={set("gold")} />
+        <R label="艺术品 / 收藏品" value={g("art")} onChange={set("art")} />
+        <ST label="实物资产小计" value={physical} color="#0f766e" />
+      </Section>
+
+      <Section title="🏦 退休 / 长期资产 Retirement Assets" color="bg-purple-500">
+        <R label="强积金（MPF）" sublabel="最新账户价值" value={g("mpf")} onChange={set("mpf")} />
+        <R label="公司退休金 / ORSO" value={g("pension")} onChange={set("pension")} />
+        <R label="年金 / 长期储蓄险" value={g("annuity")} onChange={set("annuity")} />
+        <ST label="退休资产小计" value={retirement} color="#7e22ce" />
+      </Section>
+
+      <Section title="📦 其他资产 Other Assets" color="bg-yellow-500">
+        <R label="私人企业股权" sublabel="估值（保守计算）" value={g("biz_equity")} onChange={set("biz_equity")} />
+        <R label="借出款项" value={g("loan_out")} onChange={set("loan_out")} />
+        <R label="其他资产" value={g("other_asset")} onChange={set("other_asset")} />
+        <ST label="其他资产小计" value={other_a} color="#b45309" />
+      </Section>
+
+      <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px", background:"#eff6ff", border:"1px solid #bfdbfe", borderRadius:"8px", marginBottom:"24px"}}>
+        <span style={{fontWeight:"bold", color:"#1e40af"}}>资产总计 Total Assets</span>
+        <span style={{fontSize:"18px", fontWeight:"bold", color:"#1d4ed8"}}>{sym} {formatNum(total_asset) || "0"}</span>
+      </div>
+
+      <div style={{fontSize:"16px", fontWeight:"bold", color:"#b91c1c", marginBottom:"12px"}}>负债 Liabilities</div>
+
+      <Section title="⚡ 短期负债 Short-term Liabilities" color="bg-red-400">
+        <R label="信用卡欠款" sublabel="所有信用卡未还余额" value={g("credit_card")} onChange={set("credit_card")} />
+        <R label="透支 / 循环贷款" value={g("overdraft")} onChange={set("overdraft")} />
+        <R label="短期私人贷款" sublabel="1年内到期" value={g("short_loan")} onChange={set("short_loan")} />
+        <ST label="短期负债小计" value={short_liab} color="#dc2626" />
+      </Section>
+
+      <Section title="🏠 按揭贷款 Mortgage" color="bg-rose-500">
+        <R label="自住物业按揭余额" value={g("mortgage_self")} onChange={set("mortgage_self")} />
+        <R label="投资物业按揭余额" value={g("mortgage_invest")} onChange={set("mortgage_invest")} />
+        <ST label="按揭小计" value={mortgage} color="#be123c" />
+      </Section>
+
+      <Section title="📋 其他负债 Other Liabilities" color="bg-pink-500">
+        <R label="车贷余额" value={g("car_loan")} onChange={set("car_loan")} />
+        <R label="学生贷款余额" value={g("study_loan")} onChange={set("study_loan")} />
+        <R label="个人贷款" value={g("personal_loan")} onChange={set("personal_loan")} />
+        <R label="生意贷款" value={g("biz_loan")} onChange={set("biz_loan")} />
+        <R label="应缴税款" sublabel="薪俸税 / 利得税估算" value={g("tax_due")} onChange={set("tax_due")} />
+        <R label="其他负债" value={g("other_liability")} onChange={set("other_liability")} />
+        <ST label="其他负债小计" value={other_liab} color="#9d174d" />
+      </Section>
+
+      <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px", background:"#fff1f2", border:"1px solid #fecdd3", borderRadius:"8px", marginBottom:"24px"}}>
+        <span style={{fontWeight:"bold", color:"#9f1239"}}>负债总计 Total Liabilities</span>
+        <span style={{fontSize:"18px", fontWeight:"bold", color:"#dc2626"}}>{sym} {formatNum(total_liab) || "0"}</span>
+      </div>
+
+      <div style={{background:"#111827", borderRadius:"12px", padding:"16px", color:"white", marginBottom:"16px"}}>
+        <div style={{textAlign:"center", marginBottom:"16px"}}>
+          <div style={{fontSize:"12px", color:"#9ca3af", marginBottom:"4px"}}>家庭净资产 Net Worth</div>
+          <div style={{fontSize:"32px", fontWeight:"bold", color: net_worth >= 0 ? "#4ade80" : "#f87171"}}>
+            {sym} {formatNum(net_worth) || "0"}
+          </div>
+        </div>
+        <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:"12px"}}>
+          <div style={{background:"#1f2937", borderRadius:"8px", padding:"12px", textAlign:"center"}}>
+            <div style={{fontSize:"12px", color:"#9ca3af", marginBottom:"4px"}}>负债比率</div>
+            <div style={{fontSize:"22px", fontWeight:"bold", color: parseFloat(debt_ratio) > 50 ? "#f87171" : "#4ade80"}}>{debt_ratio}%</div>
+            <div style={{fontSize:"11px", color:"#6b7280", marginTop:"4px"}}>健康水平 &lt; 50%</div>
+          </div>
+          <div style={{background:"#1f2937", borderRadius:"8px", padding:"12px", textAlign:"center"}}>
+            <div style={{fontSize:"12px", color:"#9ca3af", marginBottom:"4px"}}>流动性比率</div>
+            <div style={{fontSize:"22px", fontWeight:"bold", color: parseFloat(liquid_ratio) >= 1 ? "#4ade80" : "#fbbf24"}}>{liquid_ratio}</div>
+            <div style={{fontSize:"11px", color:"#6b7280", marginTop:"4px"}}>健康水平 ≥ 1.0</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{fontSize:"12px", color:"#9ca3af", textAlign:"center", paddingBottom:"24px"}}>
+        所有数据仅储存于本地，不会上传或记录。建议每半年更新一次。
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+</script>
+</body>
+</html>
