@@ -123,11 +123,7 @@ function LockScreen({ onUnlock }) {
           进入
         </button>
         <p style={{fontSize:"12px", color:"#9ca3af", marginBottom:"12px"}}>扫码加微信获取密码</p>
-        <img
-          src={QR_URL}
-          alt="微信二维码"
-          style={{width:"144px", height:"144px", margin:"0 auto", borderRadius:"12px", objectFit:"cover", display:"block"}}
-        />
+        <img src={QR_URL} alt="微信二维码" style={{width:"144px", height:"144px", margin:"0 auto", borderRadius:"12px", objectFit:"cover", display:"block"}} />
       </div>
     </div>
   );
@@ -157,12 +153,9 @@ function App() {
   const other_liab = sum("car_loan","study_loan","personal_loan","biz_loan","tax_due","other_liability");
   const total_liab = short_liab + mortgage + other_liab;
 
-  const net_worth   = total_asset - total_liab;
-  const debt_ratio  = total_asset > 0 ? ((total_liab / total_asset) * 100).toFixed(1) : "0.0";
+  const net_worth    = total_asset - total_liab;
+  const debt_ratio   = total_asset > 0 ? ((total_liab / total_asset) * 100).toFixed(1) : "0.0";
   const liquid_ratio = total_liab > 0 ? (liquid / total_liab).toFixed(2) : "—";
-
-  const R = (props) => <Row {...props} sym={sym} />;
-  const ST = (props) => <SubTotal {...props} sym={sym} />;
 
   return (
     <div style={{maxWidth:"640px", margin:"0 auto", padding:"16px", fontFamily:"sans-serif"}}>
@@ -172,8 +165,7 @@ function App() {
         <div style={{display:"flex", justifyContent:"center", gap:"8px", marginTop:"12px"}}>
           {Object.entries(CURRENCIES).map(([key, val]) => (
             <button key={key} onClick={() => setCurrency(key)}
-              style={{
-                padding:"6px 16px", borderRadius:"999px", fontSize:"14px", fontWeight:"500", cursor:"pointer",
+              style={{padding:"6px 16px", borderRadius:"999px", fontSize:"14px", fontWeight:"500", cursor:"pointer",
                 border: currency === key ? "1px solid #111827" : "1px solid #d1d5db",
                 background: currency === key ? "#111827" : "white",
                 color: currency === key ? "white" : "#6b7280"
@@ -186,51 +178,51 @@ function App() {
       <div style={{fontSize:"16px", fontWeight:"bold", color:"#1d4ed8", marginBottom:"12px"}}>资产 Assets</div>
 
       <Section title="💵 流动资产 Liquid Assets" color="bg-blue-500">
-        <R label="香港银行存款" sublabel="支票户口 / 储蓄户口" value={g("cash_hk")} onChange={set("cash_hk")} />
-        <R label="内地银行存款" sublabel="人民币折算" value={g("cash_cn")} onChange={set("cash_cn")} />
-        <R label="海外银行存款" sublabel="美国 / 新加坡 / 其他" value={g("cash_us")} onChange={set("cash_us")} />
-        <R label="其他现金" sublabel="实物现金 / 数字钱包余额" value={g("cash_other")} onChange={set("cash_other")} />
-        <R label="定期存款" value={g("deposit_fixed")} onChange={set("deposit_fixed")} />
-        <R label="通知存款 / 活期理财" value={g("deposit_notice")} onChange={set("deposit_notice")} />
-        <ST label="流动资产小计" value={liquid} color="#1d4ed8" />
+        <Row sym={sym} label="香港银行存款" sublabel="支票户口 / 储蓄户口" value={g("cash_hk")} onChange={set("cash_hk")} />
+        <Row sym={sym} label="内地银行存款" sublabel="人民币折算" value={g("cash_cn")} onChange={set("cash_cn")} />
+        <Row sym={sym} label="海外银行存款" sublabel="美国 / 新加坡 / 其他" value={g("cash_us")} onChange={set("cash_us")} />
+        <Row sym={sym} label="其他现金" sublabel="实物现金 / 数字钱包余额" value={g("cash_other")} onChange={set("cash_other")} />
+        <Row sym={sym} label="定期存款" value={g("deposit_fixed")} onChange={set("deposit_fixed")} />
+        <Row sym={sym} label="通知存款 / 活期理财" value={g("deposit_notice")} onChange={set("deposit_notice")} />
+        <SubTotal sym={sym} label="流动资产小计" value={liquid} color="#1d4ed8" />
       </Section>
 
       <Section title="📈 投资资产 Investment Assets" color="bg-indigo-500">
-        <R label="港股" sublabel="市值（含未结算）" value={g("stock_hk")} onChange={set("stock_hk")} />
-        <R label="美股 / 美国ETF" value={g("stock_us")} onChange={set("stock_us")} />
-        <R label="A股 / 沪深港通" value={g("stock_cn")} onChange={set("stock_cn")} />
-        <R label="其他股票" value={g("stock_other")} onChange={set("stock_other")} />
-        <R label="指数基金" sublabel="被动型 ETF" value={g("fund_index")} onChange={set("fund_index")} />
-        <R label="主动型基金" value={g("fund_active")} onChange={set("fund_active")} />
-        <R label="货币基金 / 短债基金" value={g("fund_money")} onChange={set("fund_money")} />
-        <R label="债券" sublabel="政府债 / 企业债" value={g("bond")} onChange={set("bond")} />
-        <R label="加密货币" sublabel="BTC / ETH 等折算市值" value={g("crypto")} onChange={set("crypto")} />
-        <R label="保险现金值" sublabel="储蓄险退保价值" value={g("insurance_cv")} onChange={set("insurance_cv")} />
-        <ST label="投资资产小计" value={invest} color="#4338ca" />
+        <Row sym={sym} label="港股" sublabel="市值（含未结算）" value={g("stock_hk")} onChange={set("stock_hk")} />
+        <Row sym={sym} label="美股 / 美国ETF" value={g("stock_us")} onChange={set("stock_us")} />
+        <Row sym={sym} label="A股 / 沪深港通" value={g("stock_cn")} onChange={set("stock_cn")} />
+        <Row sym={sym} label="其他股票" value={g("stock_other")} onChange={set("stock_other")} />
+        <Row sym={sym} label="指数基金" sublabel="被动型 ETF" value={g("fund_index")} onChange={set("fund_index")} />
+        <Row sym={sym} label="主动型基金" value={g("fund_active")} onChange={set("fund_active")} />
+        <Row sym={sym} label="货币基金 / 短债基金" value={g("fund_money")} onChange={set("fund_money")} />
+        <Row sym={sym} label="债券" sublabel="政府债 / 企业债" value={g("bond")} onChange={set("bond")} />
+        <Row sym={sym} label="加密货币" sublabel="BTC / ETH 等折算市值" value={g("crypto")} onChange={set("crypto")} />
+        <Row sym={sym} label="保险现金值" sublabel="储蓄险退保价值" value={g("insurance_cv")} onChange={set("insurance_cv")} />
+        <SubTotal sym={sym} label="投资资产小计" value={invest} color="#4338ca" />
       </Section>
 
       <Section title="🏠 实物资产 Physical Assets" color="bg-teal-500">
-        <R label="自住物业" sublabel="当前市值估算" value={g("property_self")} onChange={set("property_self")} />
-        <R label="投资物业" sublabel="收租物业市值" value={g("property_invest")} onChange={set("property_invest")} />
-        <R label="海外物业" value={g("property_overseas")} onChange={set("property_overseas")} />
-        <R label="车辆" sublabel="当前二手市值" value={g("vehicle")} onChange={set("vehicle")} />
-        <R label="黄金 / 贵金属" value={g("gold")} onChange={set("gold")} />
-        <R label="艺术品 / 收藏品" value={g("art")} onChange={set("art")} />
-        <ST label="实物资产小计" value={physical} color="#0f766e" />
+        <Row sym={sym} label="自住物业" sublabel="当前市值估算" value={g("property_self")} onChange={set("property_self")} />
+        <Row sym={sym} label="投资物业" sublabel="收租物业市值" value={g("property_invest")} onChange={set("property_invest")} />
+        <Row sym={sym} label="海外物业" value={g("property_overseas")} onChange={set("property_overseas")} />
+        <Row sym={sym} label="车辆" sublabel="当前二手市值" value={g("vehicle")} onChange={set("vehicle")} />
+        <Row sym={sym} label="黄金 / 贵金属" value={g("gold")} onChange={set("gold")} />
+        <Row sym={sym} label="艺术品 / 收藏品" value={g("art")} onChange={set("art")} />
+        <SubTotal sym={sym} label="实物资产小计" value={physical} color="#0f766e" />
       </Section>
 
       <Section title="🏦 退休 / 长期资产 Retirement Assets" color="bg-purple-500">
-        <R label="强积金（MPF）" sublabel="最新账户价值" value={g("mpf")} onChange={set("mpf")} />
-        <R label="公司退休金 / ORSO" value={g("pension")} onChange={set("pension")} />
-        <R label="年金 / 长期储蓄险" value={g("annuity")} onChange={set("annuity")} />
-        <ST label="退休资产小计" value={retirement} color="#7e22ce" />
+        <Row sym={sym} label="强积金（MPF）" sublabel="最新账户价值" value={g("mpf")} onChange={set("mpf")} />
+        <Row sym={sym} label="公司退休金 / ORSO" value={g("pension")} onChange={set("pension")} />
+        <Row sym={sym} label="年金 / 长期储蓄险" value={g("annuity")} onChange={set("annuity")} />
+        <SubTotal sym={sym} label="退休资产小计" value={retirement} color="#7e22ce" />
       </Section>
 
       <Section title="📦 其他资产 Other Assets" color="bg-yellow-500">
-        <R label="私人企业股权" sublabel="估值（保守计算）" value={g("biz_equity")} onChange={set("biz_equity")} />
-        <R label="借出款项" value={g("loan_out")} onChange={set("loan_out")} />
-        <R label="其他资产" value={g("other_asset")} onChange={set("other_asset")} />
-        <ST label="其他资产小计" value={other_a} color="#b45309" />
+        <Row sym={sym} label="私人企业股权" sublabel="估值（保守计算）" value={g("biz_equity")} onChange={set("biz_equity")} />
+        <Row sym={sym} label="借出款项" value={g("loan_out")} onChange={set("loan_out")} />
+        <Row sym={sym} label="其他资产" value={g("other_asset")} onChange={set("other_asset")} />
+        <SubTotal sym={sym} label="其他资产小计" value={other_a} color="#b45309" />
       </Section>
 
       <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px", background:"#eff6ff", border:"1px solid #bfdbfe", borderRadius:"8px", marginBottom:"24px"}}>
@@ -241,26 +233,26 @@ function App() {
       <div style={{fontSize:"16px", fontWeight:"bold", color:"#b91c1c", marginBottom:"12px"}}>负债 Liabilities</div>
 
       <Section title="⚡ 短期负债 Short-term Liabilities" color="bg-red-400">
-        <R label="信用卡欠款" sublabel="所有信用卡未还余额" value={g("credit_card")} onChange={set("credit_card")} />
-        <R label="透支 / 循环贷款" value={g("overdraft")} onChange={set("overdraft")} />
-        <R label="短期私人贷款" sublabel="1年内到期" value={g("short_loan")} onChange={set("short_loan")} />
-        <ST label="短期负债小计" value={short_liab} color="#dc2626" />
+        <Row sym={sym} label="信用卡欠款" sublabel="所有信用卡未还余额" value={g("credit_card")} onChange={set("credit_card")} />
+        <Row sym={sym} label="透支 / 循环贷款" value={g("overdraft")} onChange={set("overdraft")} />
+        <Row sym={sym} label="短期私人贷款" sublabel="1年内到期" value={g("short_loan")} onChange={set("short_loan")} />
+        <SubTotal sym={sym} label="短期负债小计" value={short_liab} color="#dc2626" />
       </Section>
 
       <Section title="🏠 按揭贷款 Mortgage" color="bg-rose-500">
-        <R label="自住物业按揭余额" value={g("mortgage_self")} onChange={set("mortgage_self")} />
-        <R label="投资物业按揭余额" value={g("mortgage_invest")} onChange={set("mortgage_invest")} />
-        <ST label="按揭小计" value={mortgage} color="#be123c" />
+        <Row sym={sym} label="自住物业按揭余额" value={g("mortgage_self")} onChange={set("mortgage_self")} />
+        <Row sym={sym} label="投资物业按揭余额" value={g("mortgage_invest")} onChange={set("mortgage_invest")} />
+        <SubTotal sym={sym} label="按揭小计" value={mortgage} color="#be123c" />
       </Section>
 
       <Section title="📋 其他负债 Other Liabilities" color="bg-pink-500">
-        <R label="车贷余额" value={g("car_loan")} onChange={set("car_loan")} />
-        <R label="学生贷款余额" value={g("study_loan")} onChange={set("study_loan")} />
-        <R label="个人贷款" value={g("personal_loan")} onChange={set("personal_loan")} />
-        <R label="生意贷款" value={g("biz_loan")} onChange={set("biz_loan")} />
-        <R label="应缴税款" sublabel="薪俸税 / 利得税估算" value={g("tax_due")} onChange={set("tax_due")} />
-        <R label="其他负债" value={g("other_liability")} onChange={set("other_liability")} />
-        <ST label="其他负债小计" value={other_liab} color="#9d174d" />
+        <Row sym={sym} label="车贷余额" value={g("car_loan")} onChange={set("car_loan")} />
+        <Row sym={sym} label="学生贷款余额" value={g("study_loan")} onChange={set("study_loan")} />
+        <Row sym={sym} label="个人贷款" value={g("personal_loan")} onChange={set("personal_loan")} />
+        <Row sym={sym} label="生意贷款" value={g("biz_loan")} onChange={set("biz_loan")} />
+        <Row sym={sym} label="应缴税款" sublabel="薪俸税 / 利得税估算" value={g("tax_due")} onChange={set("tax_due")} />
+        <Row sym={sym} label="其他负债" value={g("other_liability")} onChange={set("other_liability")} />
+        <SubTotal sym={sym} label="其他负债小计" value={other_liab} color="#9d174d" />
       </Section>
 
       <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px", background:"#fff1f2", border:"1px solid #fecdd3", borderRadius:"8px", marginBottom:"24px"}}>
